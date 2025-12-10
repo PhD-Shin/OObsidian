@@ -5,6 +5,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import Typography from '@tiptap/extension-typography'
 import { common, createLowlight } from 'lowlight'
+import { TextSelection } from '@tiptap/pm/state'
 import { WikiLink } from '../extensions/WikiLink'
 
 // Create lowlight instance with common languages
@@ -156,7 +157,7 @@ export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, o
         placeholder: ({ node }) => {
           if (node.type.name === 'heading') {
             const level = node.attrs.level
-            return `Heading ${level}`
+            return '#'.repeat(level) + ' '
           }
           return 'Start writing... (Type # for headings, - for lists, > for quotes)'
         },
@@ -172,6 +173,34 @@ export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, o
     editorProps: {
       attributes: {
         class: 'editor-content focus:outline-none min-h-full'
+      },
+      handleKeyDown: (view, event) => {
+        // When backspace is pressed on an empty heading, convert to paragraph with # prefix
+        if (event.key === 'Backspace') {
+          const { state } = view
+          const { selection } = state
+          const { $from } = selection
+
+          // Check if we're at the start of a heading node and it's empty
+          if ($from.parent.type.name === 'heading' && $from.parent.textContent === '' && $from.parentOffset === 0) {
+            const level = $from.parent.attrs.level as number
+            const hashes = '#'.repeat(level) + ' '
+
+            // Create a transaction to replace heading with paragraph containing #
+            const tr = state.tr
+            const pos = $from.before()
+            const paragraphType = state.schema.nodes.paragraph
+
+            tr.replaceWith(pos, $from.after(), paragraphType.create(null, state.schema.text(hashes)))
+            // Set cursor at the end of the inserted text
+            const newPos = pos + hashes.length + 1
+            tr.setSelection(TextSelection.create(tr.doc, newPos))
+
+            view.dispatch(tr)
+            return true
+          }
+        }
+        return false
       }
     },
     onUpdate: ({ editor: ed }) => {

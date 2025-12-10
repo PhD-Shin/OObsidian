@@ -1,18 +1,11 @@
 import { FC, useState, useEffect, useCallback } from 'react'
-import { X, Check, AlertCircle, Loader2, Server, Key, FolderOpen } from 'lucide-react'
+import { X, Check, Key, FolderOpen } from 'lucide-react'
 
 interface SettingsPanelProps {
   isOpen: boolean
   onClose: () => void
   vaultPath: string | null
   onChangeVault: () => void
-}
-
-interface OllamaStatus {
-  installed: boolean
-  running: boolean
-  models: string[]
-  error?: string
 }
 
 interface ProviderConfig {
@@ -25,21 +18,21 @@ interface ProviderConfig {
 const PROVIDERS = [
   {
     id: 'openai',
-    name: 'OpenAI',
+    name: 'OpenAI (ChatGPT)',
     placeholder: 'sk-...',
-    models: ['gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo']
+    models: ['gpt-4o', 'gpt-4-turbo', 'gpt-4o-mini']
   },
   {
     id: 'anthropic',
-    name: 'Anthropic',
+    name: 'Anthropic (Claude)',
     placeholder: 'sk-ant-...',
     models: ['claude-3-5-sonnet-20241022', 'claude-3-opus-20240229']
   },
   {
-    id: 'groq',
-    name: 'Groq',
-    placeholder: 'gsk_...',
-    models: ['llama-3.1-70b-versatile', 'mixtral-8x7b-32768']
+    id: 'google',
+    name: 'Google (Gemini)',
+    placeholder: 'AIza...',
+    models: ['gemini-pro', 'gemini-1.5-pro', 'gemini-1.5-flash']
   }
 ]
 
@@ -49,50 +42,8 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
   vaultPath,
   onChangeVault
 }) => {
-  const [ollamaStatus, setOllamaStatus] = useState<OllamaStatus>({
-    installed: false,
-    running: false,
-    models: []
-  })
-  const [checkingOllama, setCheckingOllama] = useState(false)
   const [providers, setProviders] = useState<Record<string, ProviderConfig>>({})
   const [activeTab, setActiveTab] = useState<'general' | 'ai'>('general')
-
-  const checkOllamaStatus = useCallback(async () => {
-    setCheckingOllama(true)
-    try {
-      const response = await fetch('http://localhost:11434/api/tags', {
-        method: 'GET',
-        signal: AbortSignal.timeout(3000)
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        const models = data.models?.map((m: { name: string }) => m.name) || []
-        setOllamaStatus({
-          installed: true,
-          running: true,
-          models
-        })
-      } else {
-        setOllamaStatus({
-          installed: true,
-          running: false,
-          models: [],
-          error: 'Ollama is not responding'
-        })
-      }
-    } catch {
-      setOllamaStatus({
-        installed: false,
-        running: false,
-        models: [],
-        error: 'Could not connect to Ollama. Make sure it is installed and running.'
-      })
-    } finally {
-      setCheckingOllama(false)
-    }
-  }, [])
 
   // Load saved API keys from localStorage
   useEffect(() => {
@@ -108,9 +59,8 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
         }
       })
       setProviders(savedProviders)
-      checkOllamaStatus()
     }
-  }, [isOpen, checkOllamaStatus])
+  }, [isOpen])
 
   const handleSaveApiKey = useCallback((providerId: string, key: string) => {
     if (key.trim()) {
@@ -253,73 +203,6 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
 
           {activeTab === 'ai' && (
             <div className="space-y-6">
-              {/* Ollama Status */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label
-                    className="text-sm font-medium flex items-center gap-2"
-                    style={{ color: '#a0a0a0' }}
-                  >
-                    <Server size={16} />
-                    Ollama (Local AI)
-                  </label>
-                  <button
-                    onClick={checkOllamaStatus}
-                    disabled={checkingOllama}
-                    className="text-xs px-2 py-1 rounded transition-colors"
-                    style={{ background: '#1f1f1f', color: '#a0a0a0' }}
-                  >
-                    {checkingOllama ? <Loader2 size={12} className="animate-spin" /> : 'Refresh'}
-                  </button>
-                </div>
-                <div
-                  className="rounded p-4"
-                  style={{ background: '#0d0d0d', border: '1px solid #1f1f1f' }}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    {ollamaStatus.running ? (
-                      <>
-                        <Check size={16} style={{ color: '#22c55e' }} />
-                        <span className="text-sm" style={{ color: '#22c55e' }}>
-                          Connected
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <AlertCircle size={16} style={{ color: '#ef4444' }} />
-                        <span className="text-sm" style={{ color: '#ef4444' }}>
-                          Not Connected
-                        </span>
-                      </>
-                    )}
-                  </div>
-                  {ollamaStatus.running && ollamaStatus.models.length > 0 && (
-                    <div className="mt-2">
-                      <span className="text-xs" style={{ color: '#666666' }}>
-                        Available models:
-                      </span>
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {ollamaStatus.models.map((model) => (
-                          <span
-                            key={model}
-                            className="px-2 py-0.5 rounded text-xs"
-                            style={{ background: '#1f1f1f', color: '#a0a0a0' }}
-                          >
-                            {model}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {!ollamaStatus.running && (
-                    <p className="text-xs mt-2" style={{ color: '#666666' }}>
-                      {ollamaStatus.error ||
-                        'Install Ollama from ollama.ai to use local AI models.'}
-                    </p>
-                  )}
-                </div>
-              </div>
-
               {/* Cloud Providers */}
               <div>
                 <label
@@ -327,7 +210,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
                   style={{ color: '#a0a0a0' }}
                 >
                   <Key size={16} />
-                  Cloud Providers
+                  AI Providers
                 </label>
                 <div className="space-y-3">
                   {PROVIDERS.map((provider) => (

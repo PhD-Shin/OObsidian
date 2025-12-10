@@ -1,1 +1,851 @@
-# OObsidian Design System## 1. Design Philosophy### OObsidian follows a **dark-first, minimal distraction** design philosophy inspired by:- **Obsidian**: Clean vault-based file explorer, seamless markdown editing- **Cursor**: Dark monochromatic UI, subtle borders, professional feel- **Antigravity**: Deep blacks, minimal contrast between sections- **Notion**: Clean typography, block-based editing### Core Principles1. **Darkness**: Pure dark backgrounds (#0d0d0d ~ #1a1a1a) - no white panels2. **Subtlety**: Minimal visual noise, borders only where necessary3. **Focus**: Content is king - UI should disappear when writing4. **Consistency**: Same visual language throughout the app5. **Performance**: Smooth animations, instant feedback---## 2. Color Palette### Base Colors (Dark Theme Only)```Background Layer 0 (Deepest):--background: #0d0d0d // Main editor areaBackground Layer 1:--background-secondary: #141414 // Sidebar, panelsBackground Layer 2:--background-tertiary: #1a1a1a // Elevated surfaces, cards, inputsBackground Layer 3:--background-hover: #252525 // Hover states--background-active: #2a2a2a // Active/selected states--background-selected: #1e3a5f // Selection with accent tint### `Border Colors```--border: #1f1f1f // Subtle borders (default)--border-hover: #333333 // Borders on hover--border-active: #404040 // Active element borders--border-focus: #3b82f6 // Focus ring (accent)### `Text Colors```--text-primary: #e5e5e5 // Main text (90% white)--text-secondary: #a0a0a0 // Secondary text, labels--text-muted: #666666 // Muted text, placeholders--text-faint: #404040 // Very subtle text, disabled--text-inverse: #0d0d0d // Text on light backgrounds### `Accent Colors```Primary (Blue):--accent: #3b82f6 // Primary accent--accent-hover: #2563eb // Accent hover (darker)--accent-muted: #1e40af // Muted accent--accent-bg: #1e3a5f // Accent background tintSuccess (Green):--success: #22c55e // Success states--success-bg: #14532d // Success backgroundWarning (Amber):--warning: #f59e0b // Warning states--warning-bg: #78350f // Warning backgroundError (Red):--error: #ef4444 // Error states--error-bg: #7f1d1d // Error backgroundInfo (Cyan):--info: #06b6d4 // Info states--info-bg: #164e63 // Info background### `Special Colors```File Icons:--folder: #f59e0b // Folder icons (amber)--file-default: #a0a0a0 // Default file icon--file-markdown: #22c55e // .md files (green)--file-code: #3b82f6 // Code files (blue)--file-image: #8b5cf6 // Image files (purple)--file-config: #f59e0b // Config files (amber)Syntax Highlighting:--syntax-keyword: #c678dd // Keywords (purple)--syntax-string: #98c379 // Strings (green)--syntax-number: #d19a66 // Numbers (orange)--syntax-comment: #5c6370 // Comments (gray)--syntax-function: #61afef // Functions (blue)--syntax-variable: #e06c75 // Variables (red)```---`## `3. Typography`### `Font Stack```css/ Sans-serif (UI, body text) /--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;/ Monospace (code, editor) /--font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;/ Serif (optional, for reading mode) /--font-serif: 'Merriweather', 'Georgia', 'Times New Roman', serif;### `Font Sizes```--text-2xs: 10px // Micro labels--text-xs: 11px // Tiny labels, status bar--text-sm: 12px // Secondary text, sidebar items--text-base: 14px // Base text, buttons--text-md: 15px // Editor body text--text-lg: 16px // Section headers--text-xl: 18px // Panel titles--text-2xl: 20px // Page titles--text-3xl: 24px // Large headings--text-4xl: 30px // Hero headings### `Font Weights```--font-light: 300--font-normal: 400--font-medium: 500--font-semibold: 600--font-bold: 700### `Line Heights```--leading-tight: 1.25--leading-snug: 1.375--leading-normal: 1.5--leading-relaxed: 1.625--leading-loose: 1.75--leading-editor: 1.7 // Optimal for markdown editing### `Letter Spacing```--tracking-tighter: -0.05em--tracking-tight: -0.025em--tracking-normal: 0--tracking-wide: 0.025em--tracking-wider: 0.05em--tracking-widest: 0.1em```---`## `4. Spacing System`### `Base Unit: 4px```--space-0: 0--space-px: 1px--space-0.5: 2px--space-1: 4px--space-1.5: 6px--space-2: 8px--space-2.5: 10px--space-3: 12px--space-3.5: 14px--space-4: 16px--space-5: 20px--space-6: 24px--space-7: 28px--space-8: 32px--space-9: 36px--space-10: 40px--space-12: 48px--space-14: 56px--space-16: 64px### `Component Spacing``| Component | Padding | Gap || -------------- | ------------------------ | ---- || Activity Bar | 12px vertical | 8px || Sidebar Header | 12px horizontal | - || Sidebar Item | 8px 12px | 4px || Editor | 24px 32px (min 48px top) | - || Chat Message | 12px | 8px || Chat Input | 12px | 8px || Status Bar | 0 12px | 16px || Modal | 24px | 16px || Dropdown | 8px | 2px || Button | 8px 16px | 8px |---`## `5. Component Specifications`### `5.1 Activity Bar (Far Left)```Dimensions:Width: 48pxIcon size: 20pxIcon spacing: 8px verticalColors:Background: #0d0d0dBorder-right: 1px solid #1f1f1fIcon default: #666666Icon hover: #a0a0a0Icon active: #e5e5e5Active Indicator:Width: 2pxPosition: left edgeColor: #3b82f6 (accent)Height: 24pxBorder-radius: 0 2px 2px 0Hover State:Background: #1a1a1aTransition: 100ms ease### `5.2 File Explorer (Sidebar)```Dimensions:Width: 240px (resizable)Min width: 180pxMax width: 400pxResize handle: 4px wide (invisible, cursor: col-resize)Header:Height: 40pxPadding: 0 12pxFont: 11px, semibold, uppercaseLetter-spacing: 0.05emColor: #666666Background: transparentBorder-bottom: 1px solid #1f1f1fTree Item:Height: 28pxPadding-left: 8px + (depth 16px)Padding-right: 8pxFont: 13px, normalColor: #a0a0a0Tree Item States:Hover:Background: #1a1a1aColor: #e5e5e5Selected:Background: #252525Color: #e5e5e5Active (editing):Background: #1e3a5fColor: #e5e5e5Icons:Size: 14pxMargin-right: 8pxChevron: 12px, #666666Folder: #f59e0bFile (.md): #22c55eFile (default): #666666Empty State:Padding: 24pxText: "No files found"Color: #666666Font: 12px italic### `*5.3 Editor Area``*`Container:Background: #0d0d0dMin-width: 400pxTab Bar:Height: 40pxBackground: #141414Border-bottom: 1px solid #1f1f1fTab:Padding: 0 16pxFont: 13pxColor (inactive): #666666Color (active): #e5e5e5Background (active): #0d0d0dBorder-bottom (active): 2px solid #3b82f6Close button: 14px, appears on hoverEditor Content:Max-width: 800px (centered, optional)Padding: 48px 32pxFont: 15pxLine-height: 1.7Color: #e5e5e5Caret: #3b82f6Selection: rgba(59, 130, 246, 0.3)Placeholder:Color: #404040Font-style: italic### `*5.4 Status Bar``*`Dimensions:Height: 24pxPadding: 0 12pxColors:Background: #141414Border-top: 1px solid #1f1f1fText: #666666Items:Font: 11pxGap: 16pxIcon size: 12pxSections:Left: File info, line countRight: Save status, model name, connection status### `*5.5 Chat Panel (Right)``*`Dimensions:Width: 320px (resizable)Min width: 280pxMax width: 480pxHeader:Height: 44pxPadding: 0 12pxBackground: #141414Border-bottom: 1px solid #1f1f1fTitle: 12px, semibold, uppercase, #666666Messages Area:Padding: 12pxGap: 16pxBackground: #141414Overflow: autoMessage Bubble:Max-width: 90%Padding: 12pxBorder-radius: 8pxFont: 14pxLine-height: 1.5User:Background: #3b82f6Color: #ffffffAlign: rightAssistant:Background: #1a1a1aColor: #e5e5e5Align: leftSystem/Error:Background: #7f1d1dColor: #fca5a5Align: centerFont: 12pxInput Area:Padding: 12pxBorder-top: 1px solid #1f1f1fTextarea:Background: #1a1a1aBorder: 1px solid #1f1f1fBorder-radius: 8pxPadding: 12pxFont: 14pxColor: #e5e5e5Rows: 2-4 (auto-expand)Focus:Border-color: #3b82f6Box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1)Send Button:Width: 40pxHeight: 40pxBackground: #3b82f6Color: #ffffffBorder-radius: 8pxDisabled:Opacity: 0.3Cursor: not-allowed### `*5.6 Settings Modal``*`Overlay:Background: rgba(0, 0, 0, 0.6)Backdrop-filter: blur(4px)Modal:Width: 600pxMax-height: 80vhBackground: #141414Border: 1px solid #1f1f1fBorder-radius: 12pxBox-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5)Header:Padding: 20px 24pxBorder-bottom: 1px solid #1f1f1fTitle: 18px, semiboldClose button: 20px, #666666Body:Padding: 24pxOverflow: autoSection:Margin-bottom: 24pxSection Title:Font: 12px, semibold, uppercaseColor: #666666Letter-spacing: 0.05emMargin-bottom: 12pxInput Field:Height: 40pxPadding: 0 12pxBackground: #1a1a1aBorder: 1px solid #1f1f1fBorder-radius: 6pxFont: 14pxColor: #e5e5e5Select:Same as InputAppearance: noneDropdown icon: right 12pxFooter:Padding: 16px 24pxBorder-top: 1px solid #1f1f1fText-align: rightButton (Primary):Padding: 10px 20pxBackground: #3b82f6Color: #ffffffBorder-radius: 6pxFont: 14px, mediumButton (Secondary):Background: transparentBorder: 1px solid #1f1f1fColor: #a0a0a0### `*5.7 Multi-Agent Panel``*`Container:Background: #141414Border-left: 1px solid #1f1f1fAgent Cards:Margin: 12pxGap: 12pxAgent Card:Background: #1a1a1aBorder: 1px solid #1f1f1fBorder-radius: 8pxOverflow: hiddenAgent Header:Padding: 12pxBorder-bottom: 1px solid #1f1f1fDisplay: flexAlign: centerGap: 8pxAgent Avatar:Width: 24pxHeight: 24pxBorder-radius: 4pxBackground: varies by agent typeArchitect: #8b5cf6 (purple)Developer: #3b82f6 (blue)Reviewer: #f59e0b (amber)Researcher: #06b6d4 (cyan)Writer: #22c55e (green)Agent Name:Font: 13px, mediumColor: #e5e5e5Agent Model:Font: 11pxColor: #666666Agent Response:Padding: 12pxFont: 14pxColor: #a0a0a0Line-height: 1.6Streaming Indicator:Blinking cursor animationColor: #3b82f6`*`*`---`*## *`6. Layout Structure`*### *`Main Layout`*`*`┌────────────────────────────────────────────────────────────┐│ Window Frame │├────┬───────────┬──────────────────────────┬────────────────┤│ │ │ │ ││ A │ S │ E │ C ││ C │ I │ D │ H ││ T │ D │ I │ A ││ I │ E │ T │ T ││ V │ B │ O │ ││ I │ A │ R │ P ││ T │ R │ │ A ││ Y │ │ │ N ││ │ │ │ E ││ B │ │ │ L ││ A │ │ │ ││ R │ │ │ ││ │ │ │ │├────┴───────────┴──────────────────────────┴────────────────┤│ Status Bar │└────────────────────────────────────────────────────────────┘Dimensions:`*- *`Activity Bar: 48px fixed`*- *`Sidebar: 240px default (resizable 180-400px)`*- *`Editor: flex-1 (min 400px)`*- *`Chat Panel: 320px default (resizable 280-480px, collapsible)`*- *`Status Bar: 24px fixed### `*Responsive Breakpoints``*`Minimum window: 800 x 500px&lt; 1000px:- Hide chat panel (show as overlay)- Reduce sidebar to icon + label&lt; 900px:- Collapse sidebar (icon only, expand on hover)&lt; 800px:- Not supported (minimum width)`*`*`---`*## *`7. Interaction States`*### *`Buttons`*`*`Default:Background: transparent OR #1a1a1aColor: #a0a0a0Border: 1px solid #1f1f1f OR noneHover:Background: #252525Color: #e5e5e5Transition: 100ms easeActive/Pressed:Background: #2a2a2aTransform: scale(0.98)Disabled:Opacity: 0.4Cursor: not-allowedPointer-events: noneFocus-visible:Outline: 2px solid #3b82f6Outline-offset: 2px### `*Text Inputs``*`Default:Background: #1a1a1aBorder: 1px solid #1f1f1fColor: #e5e5e5Placeholder:Color: #404040Hover:Border-color: #333333Focus:Border-color: #3b82f6Box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1)Error:Border-color: #ef4444Box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1)Disabled:Background: #141414Color: #404040Cursor: not-allowed### `*Links``*`Default:Color: #3b82f6Text-decoration: noneHover:Text-decoration: underlineActive:Color: #2563eb### `*File Tree Items``*`Default:Background: transparentColor: #a0a0a0Hover:Background: #1a1a1aColor: #e5e5e5Selected:Background: #252525Color: #e5e5e5Selected + Focused:Background: #1e3a5fColor: #e5e5e5Dragging:Opacity: 0.5Background: #1e3a5fDrop Target:Background: #1e3a5fBorder: 1px dashed #3b82f6`*`*`---`*## *`8. Animation &amp; Transitions`*### *`Timing Functions`*`*`css--ease-linear: linear;--ease-in: cubic-bezier(0.4, 0, 1, 1);--ease-out: cubic-bezier(0, 0, 0.2, 1);--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);--ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);### `*Durations``*`css--duration-instant: 0ms;--duration-fast: 100ms;--duration-normal: 150ms;--duration-slow: 200ms;--duration-slower: 300ms;--duration-slowest: 500ms;### `*Common Transitions``*`css/ Hover states /.interactive {transition: background-color 100ms ease,color 100ms ease,border-color 100ms ease;}/ Modals/Overlays /.modal {transition: opacity 150ms ease,transform 150ms ease;}/ Panels /.panel {transition: width 200ms ease;}/ No transitions for /`*- *`Panel resize (instant)`*- *`Scroll`*- *`Text selection`*- *`File tree expand/collapse (instant)### `*Animations``*`css/ Loading spinner /@keyframes spin {to {transform: rotate(360deg);}}.spinner {animation: spin 1s linear infinite;}/ Pulse (streaming indicator) /@keyframes pulse {0%,100% {opacity: 1;}50% {opacity: 0.5;}}.streaming {animation: pulse 1.5s ease-in-out infinite;}/ Fade in /@keyframes fadeIn {from {opacity: 0;}to {opacity: 1;}}/ Slide in from right (chat panel) /@keyframes slideInRight {from {transform: translateX(100%);}to {transform: translateX(0);}}`*`*`---`*## *`9. Icons`*### *`Icon LibraryLucide React (recommended)`*- *`Consistent 24x24 viewbox`*- *`1.5px stroke width`*- *`MIT licensed`*### *`Icon Sizes`*`*`--icon-xs: 12px // Inline, status indicators--icon-sm: 14px // Sidebar items, buttons--icon-md: 16px // Default--icon-lg: 20px // Activity bar, headers--icon-xl: 24px // Empty states, modals--icon-2xl: 32px // Hero icons### `*Icon Colors*`- `*Inherit from parent text color by default*`- `*Use explicit colors for semantic meaning:`*`- Folder: #f59e0b- Success: #22c55e- Error: #ef4444- Warning: #f59e0b---`*## *`10. Shadows &amp; Elevation`*### *`Shadow Scale`*`*`css--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);--shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.4);--shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.5);### `*Elevation Layers``*`Layer 0: Editor background (no shadow)Layer 1: Sidebar, panels (no shadow, border only)Layer 2: Dropdowns, tooltips (shadow-md)Layer 3: Modals, dialogs (shadow-xl)Layer 4: Notifications, toasts (shadow-lg)`*`*`---`*## *`11. Z-Index Scale`*`*`css--z-base: 0;--z-dropdown: 100;--z-sticky: 200;--z-fixed: 300;--z-modal-backdrop: 400;--z-modal: 500;--z-popover: 600;--z-tooltip: 700;--z-notification: 800;--z-max: 9999;`*`*`---`*## *`12. Accessibility`*### *`Focus Management`*- *`All interactive elements must be keyboard accessible`*- *`Focus ring: 2px solid #3b82f6, offset 2px`*- *`Skip links for main content areas`*- *`Logical tab order`*### *`Color Contrast`*- *`Text on background: minimum 4.5:1 (WCAG AA)`*- *`Large text: minimum 3:1`*- *`Interactive elements: minimum 3:1`*### *`Motion`*`*`css@media (prefers-reduced-motion: reduce) {,::before,::after {animation-duration: 0.01ms !important;transition-duration: 0.01ms !important;}}```### Screen Reader Support- Proper ARIA labels on interactive elements- Live regions for status updates- Semantic HTML structure---## 13. Implementation Checklist### Phase 1: Core Theme ✅- [x] CSS variables in main.css- [x] Dark backgrounds on all panels- [x] Border colors- [x] Text colors### Phase 2: Components ✅- [x] Activity Bar styling- [x] File Explorer styling- [x] Editor area styling- [x] Status bar styling- [x] Chat panel styling### Phase 3: Polish (In Progress)- [ ] Hover/active states refinement- [ ] Transitions- [ ] Icons refinement- [ ] Loading states- [ ] Empty states### Phase 4: Advanced- [ ] Settings modal- [ ] Multi-agent UI- [ ] Dropdown menus- [ ] Context menus- [ ] Notifications/toasts- [ ] Keyboard shortcuts overlay
+# OObsidian Design System
+
+## 1. Design Philosophy
+
+### OObsidian follows a **dark-first, minimal distraction** design philosophy inspired by:
+
+- **Obsidian**: Clean vault-based file explorer, seamless markdown editing
+- **Cursor**: Dark monochromatic UI, subtle borders, professional feel
+- **Antigravity**: Deep blacks, minimal contrast between sections
+- **Notion**: Clean typography, block-based editing
+
+### Core Principles
+
+1. **Darkness**: Pure dark backgrounds (#0d0d0d ~ #1a1a1a) - no white panels
+2. **Subtlety**: Minimal visual noise, borders only where necessary
+3. **Focus**: Content is king - UI should disappear when writing
+4. **Consistency**: Same visual language throughout the app
+5. **Performance**: Smooth animations, instant feedback
+
+---
+
+## 2. Color Palette
+
+### Base Colors (Dark Theme Only)
+
+```
+Background Layer 0 (Deepest):
+--background: #0d0d0d // Main editor area
+
+Background Layer 1:
+--background-secondary: #141414 // Sidebar, panels
+
+Background Layer 2:
+--background-tertiary: #1a1a1a // Elevated surfaces, cards, inputs
+
+Background Layer 3:
+--background-hover: #252525 // Hover states
+--background-active: #2a2a2a // Active/selected states
+--background-selected: #1e3a5f // Selection with accent tint
+```
+
+### Border Colors
+
+```
+--border: #1f1f1f // Subtle borders (default)
+--border-hover: #333333 // Borders on hover
+--border-active: #404040 // Active element borders
+--border-focus: #3b82f6 // Focus ring (accent)
+```
+
+### Text Colors
+
+```
+--text-primary: #e5e5e5 // Main text (90% white)
+--text-secondary: #a0a0a0 // Secondary text, labels
+--text-muted: #666666 // Muted text, placeholders
+--text-faint: #404040 // Very subtle text, disabled
+--text-inverse: #0d0d0d // Text on light backgrounds
+```
+
+### Accent Colors
+
+```
+Primary (Blue):
+--accent: #3b82f6 // Primary accent
+--accent-hover: #2563eb // Accent hover (darker)
+--accent-muted: #1e40af // Muted accent
+--accent-bg: #1e3a5f // Accent background tint
+
+Success (Green):
+--success: #22c55e // Success states
+--success-bg: #14532d // Success background
+
+Warning (Amber):
+--warning: #f59e0b // Warning states
+--warning-bg: #78350f // Warning background
+
+Error (Red):
+--error: #ef4444 // Error states
+--error-bg: #7f1d1d // Error background
+
+Info (Cyan):
+--info: #06b6d4 // Info states
+--info-bg: #164e63 // Info background
+```
+
+### Special Colors
+
+```
+File Icons:
+--folder: #f59e0b // Folder icons (amber)
+--file-default: #a0a0a0 // Default file icon
+--file-markdown: #22c55e // .md files (green)
+--file-code: #3b82f6 // Code files (blue)
+--file-image: #8b5cf6 // Image files (purple)
+--file-config: #f59e0b // Config files (amber)
+
+Syntax Highlighting:
+--syntax-keyword: #c678dd // Keywords (purple)
+--syntax-string: #98c379 // Strings (green)
+--syntax-number: #d19a66 // Numbers (orange)
+--syntax-comment: #5c6370 // Comments (gray)
+--syntax-function: #61afef // Functions (blue)
+--syntax-variable: #e06c75 // Variables (red)
+```
+
+---
+
+## 3. Typography
+
+### Font Stack
+
+```css
+/* Sans-serif (UI, body text) */
+--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+/* Monospace (code, editor) */
+--font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+
+/* Serif (optional, for reading mode) */
+--font-serif: 'Merriweather', 'Georgia', 'Times New Roman', serif;
+```
+
+### Font Sizes
+
+```
+--text-2xs: 10px // Micro labels
+--text-xs: 11px // Tiny labels, status bar
+--text-sm: 12px // Secondary text, sidebar items
+--text-base: 14px // Base text, buttons
+--text-md: 15px // Editor body text
+--text-lg: 16px // Section headers
+--text-xl: 18px // Panel titles
+--text-2xl: 20px // Page titles
+--text-3xl: 24px // Large headings
+--text-4xl: 30px // Hero headings
+```
+
+### Font Weights
+
+```
+--font-light: 300
+--font-normal: 400
+--font-medium: 500
+--font-semibold: 600
+--font-bold: 700
+```
+
+### Line Heights
+
+```
+--leading-tight: 1.25
+--leading-snug: 1.375
+--leading-normal: 1.5
+--leading-relaxed: 1.625
+--leading-loose: 1.75
+--leading-editor: 1.7 // Optimal for markdown editing
+```
+
+### Letter Spacing
+
+```
+--tracking-tighter: -0.05em
+--tracking-tight: -0.025em
+--tracking-normal: 0
+--tracking-wide: 0.025em
+--tracking-wider: 0.05em
+--tracking-widest: 0.1em
+```
+
+---
+
+## 4. Spacing System
+
+### Base Unit: 4px
+
+```
+--space-0: 0
+--space-px: 1px
+--space-0.5: 2px
+--space-1: 4px
+--space-1.5: 6px
+--space-2: 8px
+--space-2.5: 10px
+--space-3: 12px
+--space-3.5: 14px
+--space-4: 16px
+--space-5: 20px
+--space-6: 24px
+--space-7: 28px
+--space-8: 32px
+--space-9: 36px
+--space-10: 40px
+--space-12: 48px
+--space-14: 56px
+--space-16: 64px
+```
+
+### Component Spacing
+
+| Component      | Padding                  | Gap  |
+| -------------- | ------------------------ | ---- |
+| Activity Bar   | 12px vertical            | 8px  |
+| Sidebar Header | 12px horizontal          | -    |
+| Sidebar Item   | 8px 12px                 | 4px  |
+| Editor         | 24px 32px (min 48px top) | -    |
+| Chat Message   | 12px                     | 8px  |
+| Chat Input     | 12px                     | 8px  |
+| Status Bar     | 0 12px                   | 16px |
+| Modal          | 24px                     | 16px |
+| Dropdown       | 8px                      | 2px  |
+| Button         | 8px 16px                 | 8px  |
+
+---
+
+## 5. Component Specifications
+
+### 5.1 Activity Bar (Far Left)
+
+```
+Dimensions:
+Width: 48px
+Icon size: 20px
+Icon spacing: 8px vertical
+
+Colors:
+Background: #0d0d0d
+Border-right: 1px solid #1f1f1f
+Icon default: #666666
+Icon hover: #a0a0a0
+Icon active: #e5e5e5
+
+Active Indicator:
+Width: 2px
+Position: left edge
+Color: #3b82f6 (accent)
+Height: 24px
+Border-radius: 0 2px 2px 0
+
+Hover State:
+Background: #1a1a1a
+Transition: 100ms ease
+```
+
+### 5.2 File Explorer (Sidebar)
+
+```
+Dimensions:
+Width: 240px (resizable)
+Min width: 180px
+Max width: 400px
+Resize handle: 4px wide (invisible, cursor: col-resize)
+
+Header:
+Height: 40px
+Padding: 0 12px
+Font: 11px, semibold, uppercase
+Letter-spacing: 0.05em
+Color: #666666
+Background: transparent
+Border-bottom: 1px solid #1f1f1f
+
+Tree Item:
+Height: 28px
+Padding-left: 8px + (depth * 16px)
+Padding-right: 8px
+Font: 13px, normal
+Color: #a0a0a0
+
+Tree Item States:
+Hover: Background: #1a1a1a, Color: #e5e5e5
+Selected: Background: #252525, Color: #e5e5e5
+Active (editing): Background: #1e3a5f, Color: #e5e5e5
+
+Icons:
+Size: 14px
+Margin-right: 8px
+Chevron: 12px, #666666
+Folder: #f59e0b
+File (.md): #22c55e
+File (default): #666666
+
+Empty State:
+Padding: 24px
+Text: "No files found"
+Color: #666666
+Font: 12px italic
+```
+
+### 5.3 Editor Area
+
+```
+Container:
+Background: #0d0d0d
+Min-width: 400px
+
+Tab Bar:
+Height: 40px
+Background: #141414
+Border-bottom: 1px solid #1f1f1f
+
+Tab:
+Padding: 0 16px
+Font: 13px
+Color (inactive): #666666
+Color (active): #e5e5e5
+Background (active): #0d0d0d
+Border-bottom (active): 2px solid #3b82f6
+Close button: 14px, appears on hover
+
+Editor Content:
+Max-width: 800px (centered, optional)
+Padding: 48px 32px
+Font: 15px
+Line-height: 1.7
+Color: #e5e5e5
+Caret: #3b82f6
+Selection: rgba(59, 130, 246, 0.3)
+
+Placeholder:
+Color: #404040
+Font-style: italic
+```
+
+### 5.4 Status Bar
+
+```
+Dimensions:
+Height: 24px
+Padding: 0 12px
+
+Colors:
+Background: #141414
+Border-top: 1px solid #1f1f1f
+Text: #666666
+
+Items:
+Font: 11px
+Gap: 16px
+Icon size: 12px
+
+Sections:
+Left: File info, line count
+Right: Save status, model name, connection status
+```
+
+### 5.5 Chat Panel (Right)
+
+```
+Dimensions:
+Width: 320px (resizable)
+Min width: 280px
+Max width: 480px
+
+Header:
+Height: 44px
+Padding: 0 12px
+Background: #141414
+Border-bottom: 1px solid #1f1f1f
+Title: 12px, semibold, uppercase, #666666
+
+Messages Area:
+Padding: 12px
+Gap: 16px
+Background: #141414
+Overflow: auto
+
+Message Bubble:
+Max-width: 90%
+Padding: 12px
+Border-radius: 8px
+Font: 14px
+Line-height: 1.5
+
+User: Background: #3b82f6, Color: #ffffff, Align: right
+Assistant: Background: #1a1a1a, Color: #e5e5e5, Align: left
+System/Error: Background: #7f1d1d, Color: #fca5a5, Align: center, Font: 12px
+
+Input Area:
+Padding: 12px
+Border-top: 1px solid #1f1f1f
+
+Textarea:
+Background: #1a1a1a
+Border: 1px solid #1f1f1f
+Border-radius: 8px
+Padding: 12px
+Font: 14px
+Color: #e5e5e5
+Rows: 2-4 (auto-expand)
+Focus: Border-color: #3b82f6, Box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1)
+
+Send Button:
+Width: 40px
+Height: 40px
+Background: #3b82f6
+Color: #ffffff
+Border-radius: 8px
+Disabled: Opacity: 0.3, Cursor: not-allowed
+```
+
+### 5.6 Settings Modal
+
+```
+Overlay:
+Background: rgba(0, 0, 0, 0.6)
+Backdrop-filter: blur(4px)
+
+Modal:
+Width: 600px
+Max-height: 80vh
+Background: #141414
+Border: 1px solid #1f1f1f
+Border-radius: 12px
+Box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5)
+
+Header:
+Padding: 20px 24px
+Border-bottom: 1px solid #1f1f1f
+Title: 18px, semibold
+Close button: 20px, #666666
+
+Body:
+Padding: 24px
+Overflow: auto
+
+Section:
+Margin-bottom: 24px
+
+Section Title:
+Font: 12px, semibold, uppercase
+Color: #666666
+Letter-spacing: 0.05em
+Margin-bottom: 12px
+
+Input Field:
+Height: 40px
+Padding: 0 12px
+Background: #1a1a1a
+Border: 1px solid #1f1f1f
+Border-radius: 6px
+Font: 14px
+Color: #e5e5e5
+
+Footer:
+Padding: 16px 24px
+Border-top: 1px solid #1f1f1f
+Text-align: right
+
+Button (Primary):
+Padding: 10px 20px
+Background: #3b82f6
+Color: #ffffff
+Border-radius: 6px
+Font: 14px, medium
+
+Button (Secondary):
+Background: transparent
+Border: 1px solid #1f1f1f
+Color: #a0a0a0
+```
+
+---
+
+## 6. Layout Structure
+
+### Main Layout
+
+```
+┌────────────────────────────────────────────────────────────┐
+│ Window Frame                                               │
+├────┬───────────┬──────────────────────────┬────────────────┤
+│    │           │                          │                │
+│ A  │    S      │          E               │      C         │
+│ C  │    I      │          D               │      H         │
+│ T  │    D      │          I               │      A         │
+│ I  │    E      │          T               │      T         │
+│ V  │    B      │          O               │                │
+│ I  │    A      │          R               │      P         │
+│ T  │    R      │                          │      A         │
+│ Y  │           │                          │      N         │
+│    │           │                          │      E         │
+│ B  │           │                          │      L         │
+│ A  │           │                          │                │
+│ R  │           │                          │                │
+│    │           │                          │                │
+├────┴───────────┴──────────────────────────┴────────────────┤
+│ Status Bar                                                 │
+└────────────────────────────────────────────────────────────┘
+
+Dimensions:
+- Activity Bar: 48px fixed
+- Sidebar: 240px default (resizable 180-400px)
+- Editor: flex-1 (min 400px)
+- Chat Panel: 320px default (resizable 280-480px, collapsible)
+- Status Bar: 24px fixed
+```
+
+### Responsive Breakpoints
+
+```
+Minimum window: 800 x 500px
+
+< 1000px:
+- Hide chat panel (show as overlay)
+- Reduce sidebar to icon + label
+
+< 900px:
+- Collapse sidebar (icon only, expand on hover)
+
+< 800px:
+- Not supported (minimum width)
+```
+
+---
+
+## 7. Interaction States
+
+### Buttons
+
+```
+Default:
+Background: transparent OR #1a1a1a
+Color: #a0a0a0
+Border: 1px solid #1f1f1f OR none
+
+Hover:
+Background: #252525
+Color: #e5e5e5
+Transition: 100ms ease
+
+Active/Pressed:
+Background: #2a2a2a
+Transform: scale(0.98)
+
+Disabled:
+Opacity: 0.4
+Cursor: not-allowed
+Pointer-events: none
+
+Focus-visible:
+Outline: 2px solid #3b82f6
+Outline-offset: 2px
+```
+
+### Text Inputs
+
+```
+Default:
+Background: #1a1a1a
+Border: 1px solid #1f1f1f
+Color: #e5e5e5
+
+Placeholder:
+Color: #404040
+
+Hover:
+Border-color: #333333
+
+Focus:
+Border-color: #3b82f6
+Box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1)
+
+Error:
+Border-color: #ef4444
+Box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1)
+
+Disabled:
+Background: #141414
+Color: #404040
+Cursor: not-allowed
+```
+
+### Links
+
+```
+Default:
+Color: #3b82f6
+Text-decoration: none
+
+Hover:
+Text-decoration: underline
+
+Active:
+Color: #2563eb
+```
+
+### File Tree Items
+
+```
+Default:
+Background: transparent
+Color: #a0a0a0
+
+Hover:
+Background: #1a1a1a
+Color: #e5e5e5
+
+Selected:
+Background: #252525
+Color: #e5e5e5
+
+Selected + Focused:
+Background: #1e3a5f
+Color: #e5e5e5
+
+Dragging:
+Opacity: 0.5
+Background: #1e3a5f
+
+Drop Target:
+Background: #1e3a5f
+Border: 1px dashed #3b82f6
+```
+
+---
+
+## 8. Animation & Transitions
+
+### Timing Functions
+
+```css
+--ease-linear: linear;
+--ease-in: cubic-bezier(0.4, 0, 1, 1);
+--ease-out: cubic-bezier(0, 0, 0.2, 1);
+--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+--ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+```
+
+### Durations
+
+```css
+--duration-instant: 0ms;
+--duration-fast: 100ms;
+--duration-normal: 150ms;
+--duration-slow: 200ms;
+--duration-slower: 300ms;
+--duration-slowest: 500ms;
+```
+
+### Common Transitions
+
+```css
+/* Hover states */
+.interactive {
+  transition: background-color 100ms ease, color 100ms ease, border-color 100ms ease;
+}
+
+/* Modals/Overlays */
+.modal {
+  transition: opacity 150ms ease, transform 150ms ease;
+}
+
+/* Panels */
+.panel {
+  transition: width 200ms ease;
+}
+```
+
+### Animations
+
+```css
+/* Loading spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Pulse (streaming indicator) */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.streaming {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Slide in from right (chat panel) */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+```
+
+---
+
+## 9. Icons
+
+### Icon Library
+
+Lucide React (recommended)
+
+- Consistent 24x24 viewbox
+- 1.5px stroke width
+- MIT licensed
+
+### Icon Sizes
+
+```
+--icon-xs: 12px // Inline, status indicators
+--icon-sm: 14px // Sidebar items, buttons
+--icon-md: 16px // Default
+--icon-lg: 20px // Activity bar, headers
+--icon-xl: 24px // Empty states, modals
+--icon-2xl: 32px // Hero icons
+```
+
+### Icon Colors
+
+- Inherit from parent text color by default
+- Use explicit colors for semantic meaning:
+  - Folder: #f59e0b
+  - Success: #22c55e
+  - Error: #ef4444
+  - Warning: #f59e0b
+
+---
+
+## 10. Shadows & Elevation
+
+### Shadow Scale
+
+```css
+--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+--shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.4);
+--shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.5);
+```
+
+### Elevation Layers
+
+```
+Layer 0: Editor background (no shadow)
+Layer 1: Sidebar, panels (no shadow, border only)
+Layer 2: Dropdowns, tooltips (shadow-md)
+Layer 3: Modals, dialogs (shadow-xl)
+Layer 4: Notifications, toasts (shadow-lg)
+```
+
+---
+
+## 11. Z-Index Scale
+
+```css
+--z-base: 0;
+--z-dropdown: 100;
+--z-sticky: 200;
+--z-fixed: 300;
+--z-modal-backdrop: 400;
+--z-modal: 500;
+--z-popover: 600;
+--z-tooltip: 700;
+--z-notification: 800;
+--z-max: 9999;
+```
+
+---
+
+## 12. Accessibility
+
+### Focus Management
+
+- All interactive elements must be keyboard accessible
+- Focus ring: 2px solid #3b82f6, offset 2px
+- Skip links for main content areas
+- Logical tab order
+
+### Color Contrast
+
+- Text on background: minimum 4.5:1 (WCAG AA)
+- Large text: minimum 3:1
+- Interactive elements: minimum 3:1
+
+### Motion
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+### Screen Reader Support
+
+- Proper ARIA labels on interactive elements
+- Live regions for status updates
+- Semantic HTML structure
+
+---
+
+## 13. Implementation Checklist
+
+### Phase 1: Core Theme ✅
+
+- [x] CSS variables in main.css
+- [x] Dark backgrounds on all panels
+- [x] Border colors
+- [x] Text colors
+
+### Phase 2: Components ✅
+
+- [x] Activity Bar styling
+- [x] File Explorer styling
+- [x] Editor area styling
+- [x] Status bar styling
+- [x] Chat panel styling
+
+### Phase 3: Polish (In Progress)
+
+- [ ] Hover/active states refinement
+- [ ] Transitions
+- [ ] Icons refinement
+- [ ] Loading states
+- [ ] Empty states
+
+### Phase 4: Advanced
+
+- [ ] Settings modal
+- [ ] Multi-agent UI
+- [ ] Dropdown menus
+- [ ] Context menus
+- [ ] Notifications/toasts
+- [ ] Keyboard shortcuts overlay
