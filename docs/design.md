@@ -835,17 +835,356 @@ Layer 4: Notifications, toasts (shadow-lg)
 
 ### Phase 3: Polish (In Progress)
 
-- [ ] Hover/active states refinement
-- [ ] Transitions
+- [x] Hover/active states refinement
+- [x] Transitions
 - [ ] Icons refinement
 - [ ] Loading states
 - [ ] Empty states
 
 ### Phase 4: Advanced
 
-- [ ] Settings modal
+- [x] Settings modal
 - [ ] Multi-agent UI
 - [ ] Dropdown menus
-- [ ] Context menus
+- [x] Context menus
 - [ ] Notifications/toasts
 - [ ] Keyboard shortcuts overlay
+
+---
+
+## 14. Context Menu
+
+### 5.7 Context Menu
+
+```
+Container:
+Position: absolute (fixed to viewport)
+Background: #1a1a1a
+Border: 1px solid #1f1f1f
+Border-radius: 6px
+Box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4)
+Min-width: 160px
+Padding: 4px
+Z-index: 1000
+
+Menu Item:
+Height: 32px
+Padding: 0 12px
+Font: 13px
+Color: #a0a0a0
+Border-radius: 4px
+Display: flex
+Align-items: center
+Gap: 8px
+
+Menu Item States:
+Hover: Background: #252525, Color: #e5e5e5
+Active: Background: #2a2a2a
+Disabled: Opacity: 0.4
+
+Menu Item Icon:
+Size: 14px
+Color: inherit
+
+Separator:
+Height: 1px
+Background: #1f1f1f
+Margin: 4px 0
+```
+
+### Context Menu Items
+
+```
+File Explorer Context Menu:
+┌─────────────────────────┐
+│ 📄 New File       Cmd+N │
+│ 📁 New Folder           │
+├─────────────────────────┤
+│ ✏️  Rename        F2    │
+│ 🗑️  Delete        Del   │
+└─────────────────────────┘
+
+Root Folder Context Menu:
+┌─────────────────────────┐
+│ 📄 New File       Cmd+N │
+│ 📁 New Folder           │
+└─────────────────────────┘
+```
+
+---
+
+## 15. Inline Input Component
+
+### 5.8 Inline Input (Rename/Create)
+
+```
+Container:
+Display: inline-flex
+Width: 100%
+
+Input:
+Height: 24px
+Padding: 2px 6px
+Background: #1a1a1a
+Border: 1px solid #3b82f6
+Border-radius: 4px
+Font: 13px
+Color: #e5e5e5
+Outline: none
+Box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2)
+
+Placeholder:
+Color: #404040
+
+Behavior:
+- Auto-focus on render
+- Select all text on focus
+- Submit on Enter
+- Cancel on Escape
+- Cancel on click outside
+```
+
+---
+
+## 16. Sidebar Header Actions
+
+### 5.9 Sidebar Header
+
+```
+Container:
+Height: 40px
+Padding: 0 8px 0 12px
+Display: flex
+Align-items: center
+Justify-content: space-between
+Border-bottom: 1px solid #1f1f1f
+
+Title:
+Font: 11px, semibold, uppercase
+Letter-spacing: 0.05em
+Color: #666666
+
+Actions Container:
+Display: flex
+Gap: 4px
+
+Action Button:
+Width: 24px
+Height: 24px
+Border-radius: 4px
+Background: transparent
+Color: #666666
+Display: flex
+Align-items: center
+Justify-content: center
+
+Action Button States:
+Hover: Background: #1a1a1a, Color: #a0a0a0
+Active: Background: #252525
+
+Icons:
+Plus (New File): 14px
+FolderPlus (New Folder): 14px
+```
+
+---
+
+## 17. Confirmation Dialog
+
+### 5.10 Delete Confirmation Dialog
+
+```
+Overlay:
+Background: rgba(0, 0, 0, 0.6)
+Backdrop-filter: blur(4px)
+Z-index: 500
+
+Dialog:
+Width: 360px
+Background: #141414
+Border: 1px solid #1f1f1f
+Border-radius: 8px
+Box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5)
+
+Header:
+Padding: 16px
+Font: 16px, semibold
+Color: #e5e5e5
+Border-bottom: 1px solid #1f1f1f
+
+Body:
+Padding: 16px
+Font: 14px
+Color: #a0a0a0
+
+Footer:
+Padding: 12px 16px
+Display: flex
+Justify-content: flex-end
+Gap: 8px
+Border-top: 1px solid #1f1f1f
+
+Cancel Button:
+Padding: 8px 16px
+Background: transparent
+Border: 1px solid #1f1f1f
+Border-radius: 6px
+Color: #a0a0a0
+Font: 13px
+
+Delete Button:
+Padding: 8px 16px
+Background: #ef4444
+Border: none
+Border-radius: 6px
+Color: #ffffff
+Font: 13px, medium
+
+Button Hover:
+Cancel: Background: #1a1a1a
+Delete: Background: #dc2626
+```
+
+---
+
+## 18. Quick Open Modal
+
+### 5.11 Quick Open (Cmd+P)
+
+```
+Overlay:
+Background: rgba(0, 0, 0, 0.5)
+Backdrop-filter: blur(2px)
+
+Container:
+Width: 500px
+Max-height: 400px
+Margin-top: 20vh
+Background: #141414
+Border: 1px solid #1f1f1f
+Border-radius: 8px
+Box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5)
+Overflow: hidden
+
+Search Input:
+Height: 48px
+Padding: 0 16px
+Background: transparent
+Border: none
+Border-bottom: 1px solid #1f1f1f
+Font: 15px
+Color: #e5e5e5
+Outline: none
+
+Results List:
+Max-height: 350px
+Overflow: auto
+Padding: 4px
+
+Result Item:
+Height: 36px
+Padding: 0 16px
+Display: flex
+Align-items: center
+Gap: 12px
+Border-radius: 4px
+Color: #a0a0a0
+Font: 13px
+
+Result Item States:
+Hover: Background: #1a1a1a
+Selected: Background: #1e3a5f, Color: #e5e5e5
+
+File Icon:
+Size: 14px
+Color: varies by file type
+
+File Path (secondary):
+Font: 11px
+Color: #666666
+Margin-left: auto
+
+Empty State:
+Padding: 24px
+Text-align: center
+Color: #666666
+Font: 13px
+```
+
+---
+
+## 19. Tabs Bar
+
+### 5.12 Tabs
+
+```
+Container:
+Height: 40px
+Background: #141414
+Border-bottom: 1px solid #1f1f1f
+Display: flex
+Overflow-x: auto
+
+Tab:
+Min-width: 120px
+Max-width: 200px
+Height: 40px
+Padding: 0 12px 0 16px
+Display: flex
+Align-items: center
+Gap: 8px
+Background: transparent
+Border-bottom: 2px solid transparent
+Color: #666666
+Font: 13px
+Cursor: pointer
+
+Tab States:
+Hover: Background: #1a1a1a, Color: #a0a0a0
+Active: Background: #0d0d0d, Color: #e5e5e5, Border-bottom-color: #3b82f6
+
+Tab Close Button:
+Width: 18px
+Height: 18px
+Border-radius: 4px
+Background: transparent
+Color: #666666
+Opacity: 0 (visible on tab hover)
+
+Tab Close Button Hover:
+Background: #252525
+Color: #e5e5e5
+
+Modified Indicator:
+Width: 8px
+Height: 8px
+Border-radius: 50%
+Background: #e5e5e5
+(replaces close button when file is modified)
+```
+
+---
+
+## 20. File Watcher Indicator
+
+### Status Bar File Watch Status
+
+```
+Position: Right side of status bar
+Display: flex
+Align-items: center
+Gap: 4px
+
+Icon:
+Size: 12px
+Animation: pulse (when syncing)
+
+Text:
+Font: 11px
+Color: #666666
+
+States:
+Watching: Icon: Eye, Color: #22c55e
+Syncing: Icon: RefreshCw (animated), Color: #f59e0b
+Error: Icon: AlertCircle, Color: #ef4444
+```

@@ -343,3 +343,30 @@ body,
 .raw-editor .wiki-link-highlight {
   color: hsl(var(--primary));
 }
+
+/* Obsidian-style markdown heading preview classes */
+.markdown-heading-preview-1 {
+  font-size: 1.75em;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.markdown-heading-preview-2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.markdown-heading-preview-3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.markdown-heading-preview-4,
+.markdown-heading-preview-5,
+.markdown-heading-preview-6 {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}

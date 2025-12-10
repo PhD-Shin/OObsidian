@@ -5,3 +5,8 @@ out
 .eslintcache
 *.log*
 .claude/
+
+# Environment variables (API keys - NEVER commit!)
+.env
+.env.local
+.env.*.local

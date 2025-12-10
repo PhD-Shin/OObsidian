@@ -7,6 +7,7 @@ import Typography from '@tiptap/extension-typography'
 import { common, createLowlight } from 'lowlight'
 import { TextSelection } from '@tiptap/pm/state'
 import { WikiLink } from '../extensions/WikiLink'
+import { MarkdownHeading } from '../extensions/MarkdownHeading'
 
 // Create lowlight instance with common languages
 const lowlight = createLowlight(common)
@@ -16,6 +17,7 @@ interface EditorProps {
   filePath: string
   onChange: (content: string) => void
   onLinkClick?: (linkName: string) => void
+  onSelectionChange?: (selectedText: string) => void
 }
 
 // Debounce hook for file saving
@@ -94,42 +96,44 @@ const markdownToHtml = (markdown: string): string => {
 // Convert HTML back to markdown
 const htmlToMarkdown = (html: string): string => {
   const markdown = html
-    // Headers
-    .replace(/<h1>(.*?)<\/h1>/g, '# $1')
-    .replace(/<h2>(.*?)<\/h2>/g, '## $1')
-    .replace(/<h3>(.*?)<\/h3>/g, '### $1')
-    .replace(/<h4>(.*?)<\/h4>/g, '#### $1')
-    .replace(/<h5>(.*?)<\/h5>/g, '##### $1')
-    .replace(/<h6>(.*?)<\/h6>/g, '###### $1')
+    // Code blocks (handle first to preserve content)
+    .replace(/<pre><code class="language-(\w+)">([\s\S]*?)<\/code><\/pre>/g, '```$1\n$2\n```')
+    .replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, '```\n$1\n```')
+    // Headers - add newlines
+    .replace(/<h1>(.*?)<\/h1>/g, '# $1\n')
+    .replace(/<h2>(.*?)<\/h2>/g, '## $1\n')
+    .replace(/<h3>(.*?)<\/h3>/g, '### $1\n')
+    .replace(/<h4>(.*?)<\/h4>/g, '#### $1\n')
+    .replace(/<h5>(.*?)<\/h5>/g, '##### $1\n')
+    .replace(/<h6>(.*?)<\/h6>/g, '###### $1\n')
     // Bold
     .replace(/<strong>(.*?)<\/strong>/g, '**$1**')
     // Italic
     .replace(/<em>(.*?)<\/em>/g, '*$1*')
-    // Inline code
+    // Inline code (but not in pre blocks)
     .replace(/<code>(.*?)<\/code>/g, '`$1`')
     // Links
     .replace(/<a href="([^"]*)">(.*?)<\/a>/g, '[$2]($1)')
-    // Blockquotes
-    .replace(/<blockquote>(.*?)<\/blockquote>/g, '> $1')
-    // Lists
+    // Blockquotes - add newlines
+    .replace(/<blockquote><p>(.*?)<\/p><\/blockquote>/g, '> $1\n')
+    .replace(/<blockquote>(.*?)<\/blockquote>/g, '> $1\n')
+    // Lists - add newlines
     .replace(/<ul>/g, '')
-    .replace(/<\/ul>/g, '')
-    .replace(/<li>(.*?)<\/li>/g, '- $1')
-    // Paragraphs
-    .replace(/<p>(.*?)<\/p>/g, '$1')
-    // Code blocks
-    .replace(/<pre><code class="language-(\w+)">([\s\S]*?)<\/code><\/pre>/g, '```$1\n$2\n```')
-    .replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, '```\n$1\n```')
+    .replace(/<\/ul>/g, '\n')
+    .replace(/<li><p>(.*?)<\/p><\/li>/g, '- $1\n')
+    .replace(/<li>(.*?)<\/li>/g, '- $1\n')
+    // Paragraphs - add newlines between them
+    .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
     // Line breaks
     .replace(/<br\s*\/?>/g, '\n')
-    // Clean up multiple newlines
+    // Clean up multiple newlines (more than 2 becomes 2)
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 
   return markdown
 }
 
-export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, onLinkClick }) => {
+export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, onLinkClick, onSelectionChange }) => {
   const [isRawMode, setIsRawMode] = useState(false)
   const [localContent, setLocalContent] = useState(content)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -153,6 +157,7 @@ export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, o
           levels: [1, 2, 3, 4, 5, 6]
         }
       }),
+      MarkdownHeading,
       Placeholder.configure({
         placeholder: ({ node }) => {
           if (node.type.name === 'heading') {
@@ -208,6 +213,17 @@ export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, o
       const markdown = htmlToMarkdown(html)
       setLocalContent(markdown)
       debouncedOnChange(markdown)
+    },
+    onSelectionUpdate: ({ editor: ed }) => {
+      if (onSelectionChange) {
+        const { from, to } = ed.state.selection
+        if (from !== to) {
+          const selectedText = ed.state.doc.textBetween(from, to, '\n')
+          onSelectionChange(selectedText)
+        } else {
+          onSelectionChange('')
+        }
+      }
     }
   })
 
@@ -256,6 +272,24 @@ export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, o
     [handleRawChange]
   )
 
+  // Handle selection change in raw mode
+  const handleRawSelect = useCallback(
+    (e: React.SyntheticEvent<HTMLTextAreaElement>): void => {
+      if (onSelectionChange) {
+        const textarea = e.currentTarget
+        const start = textarea.selectionStart
+        const end = textarea.selectionEnd
+        if (start !== end) {
+          const selectedText = textarea.value.substring(start, end)
+          onSelectionChange(selectedText)
+        } else {
+          onSelectionChange('')
+        }
+      }
+    },
+    [onSelectionChange]
+  )
+
   const fileName = getFileName(filePath)
 
   return (
@@ -279,7 +313,18 @@ export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, o
       </div>
 
       {/* Editor area */}
-      <div className="flex-1 overflow-auto" style={{ padding: '24px 32px' }}>
+      <div
+        className="flex-1 overflow-auto"
+        style={{ padding: '24px 32px' }}
+        onClick={() => {
+          // Click anywhere in editor area to focus the editor (like Obsidian/VSCode)
+          if (!isRawMode && editor) {
+            editor.commands.focus('end')
+          } else if (isRawMode && textareaRef.current) {
+            textareaRef.current.focus()
+          }
+        }}
+      >
         {isRawMode ? (
           <textarea
             ref={textareaRef}
@@ -294,6 +339,7 @@ export const MarkdownEditor: FC<EditorProps> = ({ content, filePath, onChange, o
             value={localContent}
             onChange={(e) => handleRawChange(e.target.value)}
             onKeyDown={handleKeyDown}
+            onSelect={handleRawSelect}
             spellCheck={false}
             placeholder="Start writing..."
           />

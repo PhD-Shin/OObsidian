@@ -11,6 +11,12 @@ interface FileOperationResult {
   path?: string
 }
 
+interface DirChangeEvent {
+  dirPath: string
+  eventType: string
+  filename: string
+}
+
 declare global {
   interface Window {
     electron: ElectronAPI
@@ -24,6 +30,13 @@ declare global {
       deleteFile: (path: string) => Promise<FileOperationResult>
       renameFile: (oldPath: string, newPath: string) => Promise<FileOperationResult>
       createDir: (path: string) => Promise<FileOperationResult>
+      watchFile: (path: string) => Promise<FileOperationResult>
+      unwatchFile: (path: string) => Promise<FileOperationResult>
+      watchDir: (path: string) => Promise<FileOperationResult>
+      unwatchDir: (path: string) => Promise<FileOperationResult>
+      onFileChanged: (callback: (filePath: string) => void) => void
+      onDirChanged: (callback: (event: DirChangeEvent) => void) => void
+      removeFileWatchListeners: () => void
     }
     ai: {
       chatStart: (messages: { role: string; content: string }[], model: string) => void

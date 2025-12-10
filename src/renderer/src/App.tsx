@@ -8,6 +8,7 @@ import { StatusBar } from './components/StatusBar'
 import { SettingsPanel } from './components/SettingsPanel'
 import { QuickOpen } from './components/QuickOpen'
 import { TabBar, Tab } from './components/TabBar'
+import { Backlinks } from './components/Backlinks'
 import { FileText, Loader2, FolderOpen } from 'lucide-react'
 
 interface OpenFile {
@@ -27,6 +28,7 @@ interface AppState {
   showChat: boolean
   showSettings: boolean
   showQuickOpen: boolean
+  selectedText: string
 }
 
 // Empty state when no file is selected
@@ -91,7 +93,8 @@ function App(): JSX.Element {
     error: null,
     showChat: true,
     showSettings: false,
-    showQuickOpen: false
+    showQuickOpen: false,
+    selectedText: ''
   })
 
   const {
@@ -102,7 +105,8 @@ function App(): JSX.Element {
     isSaving,
     showChat,
     showSettings,
-    showQuickOpen
+    showQuickOpen,
+    selectedText
   } = state
 
   // Get current file content
@@ -157,6 +161,41 @@ function App(): JSX.Element {
 
     initVaultPath()
   }, [])
+
+  // Watch open files for external changes
+  useEffect(() => {
+    // Set up file change listener
+    window.fs.onFileChanged(async (filePath: string) => {
+      // Check if this file is open
+      const openFile = state.openFiles.find((f) => f.path === filePath)
+      if (openFile && !openFile.isDirty) {
+        // File is open and not dirty - reload it
+        try {
+          const newContent = await window.fs.readFile(filePath)
+          setState((prev) => ({
+            ...prev,
+            openFiles: prev.openFiles.map((f) =>
+              f.path === filePath ? { ...f, content: newContent } : f
+            )
+          }))
+        } catch {
+          // File might have been deleted
+        }
+      }
+    })
+
+    // Watch all open files
+    state.openFiles.forEach((file) => {
+      window.fs.watchFile(file.path).catch(() => {})
+    })
+
+    return () => {
+      // Cleanup: stop watching files
+      state.openFiles.forEach((file) => {
+        window.fs.unwatchFile(file.path).catch(() => {})
+      })
+    }
+  }, [state.openFiles])
 
   const handleSelectFolder = useCallback(async () => {
     try {
@@ -280,6 +319,10 @@ function App(): JSX.Element {
 
   const handleCloseQuickOpen = useCallback(() => {
     setState((prev) => ({ ...prev, showQuickOpen: false }))
+  }, [])
+
+  const handleSelectionChange = useCallback((text: string) => {
+    setState((prev) => ({ ...prev, selectedText: text }))
   }, [])
 
   // Create new file
@@ -446,24 +489,42 @@ function App(): JSX.Element {
               onTabSelect={handleTabSelect}
               onTabClose={handleTabClose}
             />
-            <div className="flex-1 overflow-hidden">
-              {isLoading ? (
-                <LoadingEditor />
-              ) : activeFile ? (
-                <MarkdownEditor
-                  key={activeFile}
-                  content={fileContent}
-                  filePath={activeFile}
-                  onChange={handleContentChange}
-                  onLinkClick={handleWikiLinkClick}
+            <div className="flex-1 overflow-hidden flex flex-col">
+              <div className="flex-1 overflow-hidden">
+                {isLoading ? (
+                  <LoadingEditor />
+                ) : activeFile ? (
+                  <MarkdownEditor
+                    key={activeFile}
+                    content={fileContent}
+                    filePath={activeFile}
+                    onChange={handleContentChange}
+                    onLinkClick={handleWikiLinkClick}
+                    onSelectionChange={handleSelectionChange}
+                  />
+                ) : (
+                  <EmptyEditor />
+                )}
+              </div>
+              {activeFile && (
+                <Backlinks
+                  currentFilePath={activeFile}
+                  vaultPath={vaultPath}
+                  onFileSelect={handleFileSelect}
                 />
-              ) : (
-                <EmptyEditor />
               )}
             </div>
           </div>
         }
-        panel={showChat ? <ChatSidebar /> : null}
+        panel={
+          showChat ? (
+            <ChatSidebar
+              currentFileContent={fileContent}
+              currentFileName={currentFile?.name}
+              selectedText={selectedText}
+            />
+          ) : null
+        }
         statusBar={
           <StatusBar
             selectedFile={activeFile}

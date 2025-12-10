@@ -17,6 +17,12 @@ interface FileOperationResult {
   path?: string
 }
 
+interface DirChangeEvent {
+  dirPath: string
+  eventType: string
+  filename: string
+}
+
 // File System API
 const fsApi = {
   readFile: (path: string): Promise<string> => ipcRenderer.invoke('fs:read-file', path),
@@ -32,7 +38,26 @@ const fsApi = {
   renameFile: (oldPath: string, newPath: string): Promise<FileOperationResult> =>
     ipcRenderer.invoke('fs:rename-file', oldPath, newPath),
   createDir: (path: string): Promise<FileOperationResult> =>
-    ipcRenderer.invoke('fs:create-dir', path)
+    ipcRenderer.invoke('fs:create-dir', path),
+  // File watching
+  watchFile: (path: string): Promise<FileOperationResult> =>
+    ipcRenderer.invoke('fs:watch-file', path),
+  unwatchFile: (path: string): Promise<FileOperationResult> =>
+    ipcRenderer.invoke('fs:unwatch-file', path),
+  watchDir: (path: string): Promise<FileOperationResult> =>
+    ipcRenderer.invoke('fs:watch-dir', path),
+  unwatchDir: (path: string): Promise<FileOperationResult> =>
+    ipcRenderer.invoke('fs:unwatch-dir', path),
+  onFileChanged: (callback: (filePath: string) => void): void => {
+    ipcRenderer.on('fs:file-changed', (_, filePath) => callback(filePath))
+  },
+  onDirChanged: (callback: (event: DirChangeEvent) => void): void => {
+    ipcRenderer.on('fs:dir-changed', (_, event) => callback(event))
+  },
+  removeFileWatchListeners: (): void => {
+    ipcRenderer.removeAllListeners('fs:file-changed')
+    ipcRenderer.removeAllListeners('fs:dir-changed')
+  }
 }
 
 // AI Chat API

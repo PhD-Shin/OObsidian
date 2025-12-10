@@ -1,8 +1,12 @@
 import { ipcMain, dialog, BrowserWindow, app } from 'electron'
 import fs from 'fs/promises'
+import fsSync from 'fs'
 import path from 'path'
 
-import { streamChat } from './ollama'
+import { streamChatOpenAI, OPENAI_MODELS } from './openai'
+
+// Store active file watchers
+const fileWatchers = new Map<string, fsSync.FSWatcher>()
 
 // Path validation to prevent directory traversal attacks
 const isValidPath = (filePath: string): boolean => {
@@ -34,13 +38,18 @@ const isBlockedPath = (filePath: string): boolean => {
 
 export const registerHandlers = (): void => {
   ipcMain.on('ai:chat-start', (event, { messages, model }) => {
-    streamChat(
+    streamChatOpenAI(
       messages,
-      model,
-      (token) => event.sender.send('ai:token', token),
+      model || 'gpt-5-mini',
+      (token: string) => event.sender.send('ai:token', token),
       () => event.sender.send('ai:done'),
-      (err) => event.sender.send('ai:error', err.message)
+      (err: Error) => event.sender.send('ai:error', err.message)
     )
+  })
+
+  // Get available AI models
+  ipcMain.handle('ai:get-models', () => {
+    return OPENAI_MODELS
   })
 
   ipcMain.handle('fs:read-file', async (_, filePath: string) => {
@@ -216,5 +225,84 @@ export const registerHandlers = (): void => {
     }
 
     return defaultPath
+  })
+
+  // Watch a file for changes
+  ipcMain.handle('fs:watch-file', (event, filePath: string) => {
+    if (!isValidPath(filePath)) {
+      throw new Error('Invalid file path')
+    }
+
+    // Stop existing watcher for this file
+    if (fileWatchers.has(filePath)) {
+      fileWatchers.get(filePath)?.close()
+      fileWatchers.delete(filePath)
+    }
+
+    try {
+      const watcher = fsSync.watch(filePath, (eventType) => {
+        if (eventType === 'change') {
+          event.sender.send('fs:file-changed', filePath)
+        }
+      })
+
+      fileWatchers.set(filePath, watcher)
+      return { success: true }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to watch file'
+      throw new Error(message)
+    }
+  })
+
+  // Stop watching a file
+  ipcMain.handle('fs:unwatch-file', (_, filePath: string) => {
+    if (fileWatchers.has(filePath)) {
+      fileWatchers.get(filePath)?.close()
+      fileWatchers.delete(filePath)
+    }
+    return { success: true }
+  })
+
+  // Watch a directory for changes (new files, deletions, renames)
+  ipcMain.handle('fs:watch-dir', (event, dirPath: string) => {
+    if (!isValidPath(dirPath)) {
+      throw new Error('Invalid directory path')
+    }
+
+    const watcherId = `dir:${dirPath}`
+
+    // Stop existing watcher for this directory
+    if (fileWatchers.has(watcherId)) {
+      fileWatchers.get(watcherId)?.close()
+      fileWatchers.delete(watcherId)
+    }
+
+    try {
+      const watcher = fsSync.watch(dirPath, { recursive: true }, (eventType, filename) => {
+        if (filename) {
+          event.sender.send('fs:dir-changed', {
+            dirPath,
+            eventType,
+            filename: filename.toString()
+          })
+        }
+      })
+
+      fileWatchers.set(watcherId, watcher)
+      return { success: true }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to watch directory'
+      throw new Error(message)
+    }
+  })
+
+  // Stop watching a directory
+  ipcMain.handle('fs:unwatch-dir', (_, dirPath: string) => {
+    const watcherId = `dir:${dirPath}`
+    if (fileWatchers.has(watcherId)) {
+      fileWatchers.get(watcherId)?.close()
+      fileWatchers.delete(watcherId)
+    }
+    return { success: true }
   })
 }
