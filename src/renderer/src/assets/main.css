@@ -1,0 +1,345 @@
+@import 'tailwindcss';
+
+/* OObsidian Dark Theme - Cursor/Antigravity inspired */
+@layer base {
+  :root {
+    /* Dark theme only - no light mode */
+    --background: 0 0% 5%; /* #0d0d0d */
+    --background-secondary: 0 0% 8%; /* #141414 */
+    --background-tertiary: 0 0% 10%; /* #1a1a1a */
+
+    --foreground: 0 0% 90%; /* #e5e5e5 */
+    --foreground-secondary: 0 0% 63%; /* #a0a0a0 */
+    --foreground-muted: 0 0% 40%; /* #666666 */
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 90%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 90%;
+
+    --primary: 217 91% 60%; /* #3b82f6 - blue accent */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 50%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 12%; /* #1f1f1f */
+    --input: 0 0% 12%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.375rem;
+
+    /* Special colors */
+    --folder: 38 92% 50%; /* amber for folders */
+    --file: 0 0% 63%;
+    --success: 142 71% 45%;
+    --warning: 38 92% 50%;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar Styling - minimal */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 20%);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0 0% 25%);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Selection */
+::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--foreground));
+}
+
+/* Focus visible outline */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Markdown Editor Styles */
+.editor-content {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: hsl(var(--foreground));
+}
+
+.editor-content h1,
+.editor-content h2,
+.editor-content h3,
+.editor-content h4,
+.editor-content h5,
+.editor-content h6 {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.editor-content h1 {
+  font-size: 1.75em;
+}
+.editor-content h2 {
+  font-size: 1.5em;
+}
+.editor-content h3 {
+  font-size: 1.25em;
+}
+
+.editor-content p {
+  margin-bottom: 1em;
+}
+
+.editor-content code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  background: hsl(var(--muted));
+  padding: 0.125em 0.375em;
+  border-radius: 4px;
+}
+
+.editor-content pre {
+  background: hsl(var(--background-secondary));
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.editor-content pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.editor-content blockquote {
+  border-left: 3px solid hsl(var(--primary));
+  margin: 1em 0;
+  padding-left: 1em;
+  color: hsl(var(--foreground-secondary));
+}
+
+.editor-content ul,
+.editor-content ol {
+  margin: 1em 0;
+  padding-left: 1.5em;
+}
+
+.editor-content li {
+  margin: 0.25em 0;
+}
+
+.editor-content a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+}
+
+.editor-content a:hover {
+  text-decoration: underline;
+}
+
+.editor-content hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 2em 0;
+}
+
+/* Raw editor textarea */
+.raw-editor {
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  tab-size: 2;
+}
+
+/* TipTap Editor Styles */
+.tiptap {
+  outline: none;
+}
+
+/* Placeholder styles for empty nodes */
+.tiptap p.is-editor-empty:first-child::before,
+.tiptap .is-empty::before {
+  color: #404040;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Heading placeholders */
+.tiptap h1.is-empty::before {
+  font-size: 1.75em;
+  font-weight: 600;
+}
+
+.tiptap h2.is-empty::before {
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+.tiptap h3.is-empty::before {
+  font-size: 1.25em;
+  font-weight: 600;
+}
+
+/* Syntax Highlighting for Code Blocks */
+.tiptap pre {
+  background: #141414;
+  border: 1px solid #1f1f1f;
+  border-radius: 6px;
+  padding: 1em;
+  margin: 1em 0;
+  overflow-x: auto;
+}
+
+.tiptap pre code {
+  background: transparent;
+  padding: 0;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  color: #e5e5e5;
+}
+
+/* Lowlight syntax highlighting colors */
+.hljs-comment,
+.hljs-quote {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-keyword,
+.hljs-formula {
+  color: #c678dd;
+}
+
+.hljs-section,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-deletion,
+.hljs-subst {
+  color: #e06c75;
+}
+
+.hljs-literal {
+  color: #56b6c2;
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta .hljs-string {
+  color: #98c379;
+}
+
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-type,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-number {
+  color: #d19a66;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-title {
+  color: #61afef;
+}
+
+.hljs-built_in,
+.hljs-title.class_,
+.hljs-class .hljs-title {
+  color: #e6c07b;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+.hljs-link {
+  text-decoration: underline;
+}
+
+/* Wiki Links [[note]] */
+.wiki-link {
+  color: hsl(var(--primary));
+  background: hsl(var(--primary) / 0.1);
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.wiki-link:hover {
+  background: hsl(var(--primary) / 0.2);
+  text-decoration: none;
+}
+
+/* Raw mode wiki link highlighting */
+.raw-editor .wiki-link-highlight {
+  color: hsl(var(--primary));
+}
